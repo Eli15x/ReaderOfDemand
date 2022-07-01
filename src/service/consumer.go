@@ -10,7 +10,7 @@ var (
 )
 
 type serviceBD interface {
-	Consumer(topic string, consumer string)
+	Consumer(topic string, consumer string) error
 }
 
 type service struct{}
@@ -22,8 +22,9 @@ func GetInstanceServiceBD() serviceBD {
 	return instanceService
 }
 
-func (s *service) Consumer(topic string, consumer string) {
+func (s *service) Consumer(topic string, consumer string) error {
 
+return nil
 	/*fmt.Println("Consumindo topic : [", topic, "]")
 	db, err := sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/db", os.Getenv("USER"), os.Getenv("PASS"), os.Getenv("ENDPOINT")))
 	if err = db.Ping(); err != nil {

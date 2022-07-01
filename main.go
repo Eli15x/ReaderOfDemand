@@ -5,8 +5,10 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	service "github.com/Eli15x/ReaderOfDemand/service"
+	
+	"github.com/labstack/gommon/log"
+	"github.com/Eli15x/ReaderOfDemand/src/client"
+	service "github.com/Eli15x/ReaderOfDemand/src/service"
 	_ "github.com/segmentio/kafka-go"
 )
 
@@ -17,10 +19,21 @@ const (
 func main() {
 
 	topics := strings.Split(os.Getenv("TOPICS"), ",")
+	err := client.GetInstanceClient().Connect()
+
+	if err != nil {
+		log.Infof("[ErrorClientConnection] error : %s \n", err, "")
+		return
+	}
+
+	
 
 	for _, v := range topics {
 		c := fmt.Sprintf("consumer-%s", v)
-		service.GetInstanceServiceBD().Consumer(v, c)
+		err := service.GetInstanceServiceBD().Consumer(v, c)
+		if err != nil {
+			log.Infof("[ErrorConsumer] error : %s \n", err, "")
+		}
 	}
 
 	time.Sleep(300 * time.Second)
